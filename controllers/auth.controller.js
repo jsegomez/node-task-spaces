@@ -8,10 +8,15 @@ const generateJWT = require('../helpers/generate-jwt');
 
 const login = async(req = request, res = response) => {
   const { email, password } = req.body;
-  const user = req.user;
 
   try {
     const user = await User.findOne({ email });
+    if(!user){
+      return res.status(401).json({
+        message: 'Usuario y/o contraseña invalido'
+      });
+    }
+
     const checkPassword = bcrypt.compareSync(password, user.password);
 
     if(!checkPassword){
